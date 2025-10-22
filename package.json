@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@tamagui/config": "^1.135.4",
+    "@tamagui/lucide-icons": "^1.135.4",
     "expo": "~54.0.18",
+    "expo-linear-gradient": "~15.0.7",
     "expo-status-bar": "~3.0.8",
     "react": "19.1.0",
     "react-dom": "19.1.0",

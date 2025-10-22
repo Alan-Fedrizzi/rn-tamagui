@@ -154,11 +154,15 @@ const shorthands = {
   ai: "alignItems",
   jc: "justifyContent",
   br: "borderRadius",
+  w: "width",
+  h: "height",
 } as typeof defaultConfig.shorthands & {
   f: "flex";
   ai: "alignItems";
   jc: "justifyContent";
   br: "borderRadius";
+  w: "width";
+  h: "height";
 };
 
 export const config = createTamagui({
