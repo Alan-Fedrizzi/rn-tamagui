@@ -7,6 +7,22 @@ import * as lightThemeTokens from "./support/light";
 
 type TokenPrimitive = string | number;
 
+type NormalizeTokenKey<Key extends string> =
+  Key extends `${infer First}${infer Rest}`
+    ? `${Lowercase<First>}${Rest}`
+    : Key;
+
+type TokenNamesForPrefix<
+  Source extends Record<string, unknown>,
+  Prefix extends string
+> = {
+  [Key in Extract<keyof Source, string>]: Key extends `${Prefix}${infer Rest}`
+    ? Rest extends ""
+      ? never
+      : NormalizeTokenKey<Rest>
+    : never;
+}[Extract<keyof Source, string>];
+
 const toTokenPrimitive = (value: unknown): TokenPrimitive => {
   if (value == null) {
     return "";
@@ -44,21 +60,32 @@ const toTokenPrimitive = (value: unknown): TokenPrimitive => {
 
 const buildTokenGroup = <
   Source extends Record<string, unknown>,
-  Prefix extends string,
+  Prefix extends string
 >(
   source: Source,
-  prefix: Prefix,
+  prefix: Prefix
 ) =>
   Object.fromEntries(
-    Object.entries(source)
-      .filter(([key]) => key.startsWith(prefix))
-      .map(
-        ([key, value]) => [`$${key}`, toTokenPrimitive(value)] as const,
-      ),
-  ) as Record<
-    `$${Extract<keyof Source, `${Prefix}${string}`>}`,
-    TokenPrimitive
-  >;
+    Object.entries(source).reduce<Array<[string, TokenPrimitive]>>(
+      (entries, [key, value]) => {
+        if (!key.startsWith(prefix)) {
+          return entries;
+        }
+
+        const rest = key.slice(prefix.length);
+
+        if (!rest) {
+          return entries;
+        }
+
+        const normalizedKey = rest.charAt(0).toLowerCase() + rest.slice(1);
+
+        entries.push([`$${normalizedKey}`, toTokenPrimitive(value)]);
+        return entries;
+      },
+      []
+    )
+  ) as Record<`$${TokenNamesForPrefix<Source, Prefix>}`, TokenPrimitive>;
 
 const spaceTokens = buildTokenGroup(baseTokens, "tpSpacing");
 const sizeTokens = buildTokenGroup(baseTokens, "tpSizing");
@@ -72,13 +99,13 @@ type SupportColorKeys<Source extends Record<string, unknown>> = Extract<
   string
 >;
 
-const extendThemeWithSupportTokens = <
-  Source extends Record<string, unknown>,
->(source: Source) =>
+const extendThemeWithSupportTokens = <Source extends Record<string, unknown>>(
+  source: Source
+) =>
   Object.fromEntries(
     Object.entries(source)
       .filter(([key]) => key.startsWith("tpColor"))
-      .map(([key, value]) => [key, String(value)] as const),
+      .map(([key, value]) => [key, String(value)] as const)
   ) as Record<SupportColorKeys<Source>, string>;
 
 const customLightTheme = {
@@ -106,11 +133,11 @@ const tokens = {
     ...radiusTokens,
   },
   opacity: {
-    ...(
-      (defaultConfig.tokens as {
+    ...((
+      defaultConfig.tokens as {
         opacity?: Record<string, TokenPrimitive>;
-      }).opacity ?? {}
-    ),
+      }
+    ).opacity ?? {}),
     ...opacityTokens,
   },
 };
@@ -139,6 +166,19 @@ export const config = createTamagui({
   shorthands,
   tokens,
   themes,
+  media: {
+    ...defaultConfig.media,
+    xs: { maxWidth: 380 },
+    gtXs: { minWidth: 381 },
+    sm: { maxWidth: 576 },
+    gtSm: { minWidth: 577 },
+    md: { maxWidth: 768 },
+    gtMd: { minWidth: 769 },
+    lg: { maxWidth: 992 },
+    gtLg: { minWidth: 993 },
+    xl: { maxWidth: 1200 },
+    gtXl: { minWidth: 1201 },
+  },
 });
 
 export type AppConfig = typeof config;
