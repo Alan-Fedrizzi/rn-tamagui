@@ -1,15 +1,7 @@
 import { useMemo, useState } from "react";
 
-import { Check, ChevronDown, ChevronUp } from "@tamagui/lucide-icons";
-import {
-  Adapt,
-  Select,
-  Sheet,
-  Stack,
-  Text,
-  XStack,
-  YStack,
-} from "tamagui";
+import { Bell, Check, ChevronDown, ChevronUp } from "@tamagui/lucide-icons";
+import { Adapt, Button, Select, Sheet, Stack, Text, XStack, YStack } from "tamagui";
 import { LinearGradient } from "tamagui/linear-gradient";
 
 const NAV_TABS = [
@@ -54,27 +46,19 @@ const TopNavigation = () => (
         <CourseSelect />
       </XStack>
       <XStack ai="center" gap="$md">
-        <Stack
-          bg="$tpColorNeutralSolidSoft80"
-          px="$md"
-          py="$2xs"
-          br="$full"
-        >
-          <Text color="$tpColorNeutralSolidHard80" fontSize={12}>
-            12 de outubro, 09:45
-          </Text>
-        </Stack>
-        <Stack
+        <Button
           w="$lg"
           h="$lg"
           br="$full"
-          overflow="hidden"
-          bg="$tpColorNeutralSolidSoft70"
-          ai="center"
-          jc="center"
-        >
-          <Text color="$tpColorNeutralSolidHard80">🔔</Text>
-        </Stack>
+          bg="transparent"
+          color="$tpColorNeutralSolidHard80"
+          borderWidth={1}
+          borderColor="$tpColorNeutralSolidSoft70"
+          icon={Bell}
+          hoverStyle={{ bg: "$tpColorNeutralSolidSoft80" }}
+          pressStyle={{ bg: "$tpColorNeutralSolidSoft70" }}
+          accessibilityLabel="Notificações"
+        />
         <Stack
           w="$lg"
           h="$lg"
@@ -134,7 +118,7 @@ const CourseSelect = () => {
           </Select.ItemIndicator>
         </Select.Item>
       )),
-    [],
+    []
   );
 
   return (
@@ -195,9 +179,20 @@ const CourseSelect = () => {
       </Adapt>
 
       <Select.Content zIndex={200000}>
-        <Select.ScrollUpButton ai="center" jc="center" position="relative" w="100%" h="$3">
+        <Select.ScrollUpButton
+          ai="center"
+          jc="center"
+          position="relative"
+          w="100%"
+          h="$3"
+        >
           <ChevronUp size={16} />
-          <LinearGradient start={[0, 0]} end={[0, 1]} fullscreen colors={["$background", "transparent"]} />
+          <LinearGradient
+            start={[0, 0]}
+            end={[0, 1]}
+            fullscreen
+            colors={["$background", "transparent"]}
+          />
         </Select.ScrollUpButton>
 
         <Select.Viewport style={{ minWidth: 240 }}>
@@ -207,9 +202,20 @@ const CourseSelect = () => {
           </Select.Group>
         </Select.Viewport>
 
-        <Select.ScrollDownButton ai="center" jc="center" position="relative" w="100%" h="$3">
+        <Select.ScrollDownButton
+          ai="center"
+          jc="center"
+          position="relative"
+          w="100%"
+          h="$3"
+        >
           <ChevronDown size={16} />
-          <LinearGradient start={[0, 0]} end={[0, 1]} fullscreen colors={["transparent", "$background"]} />
+          <LinearGradient
+            start={[0, 0]}
+            end={[0, 1]}
+            fullscreen
+            colors={["transparent", "$background"]}
+          />
         </Select.ScrollDownButton>
       </Select.Content>
     </Select>
